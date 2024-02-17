@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+import os
+import json
 
 def flattener(image, pts, w, h):
     """Flattens an image of a card into a top-down 200x300 perspective."""
@@ -49,21 +51,20 @@ def flattener(image, pts, w, h):
 
     return warp
 
-def getPhoto(image):
+def getPhoto(folder, name):
+    image = folder + '/' + name
     img = cv2.imread(image)
-    
+    if img is None:
+        return 1
     img_width, img_height = np.shape(img)[:2]
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     background = img_gray[int(img_height / 100)][int(img_width / 2)]
     thresh_lvl = background + 80
-    print(thresh_lvl)
-    if (thresh_lvl > 200):
-        thresh_lvl = 200
+    if thresh_lvl > 170 or thresh_lvl < 130:
+        return 1
     
     img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
     _, thresh = cv2.threshold(img_blur, thresh_lvl, 255, cv2.THRESH_BINARY)
-    cv2.imshow("thresh", thresh)
-    cv2.waitKey(0)
     
     contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     contourValues = [cv2.contourArea(i) for i in contours]
@@ -76,6 +77,8 @@ def getPhoto(image):
         # Increase the accuracy parameter for better corner approximation
         approx = cv2.approxPolyDP(biggestContour, 0.01 * peri, True)
         pts = np.float32(approx)
+        if pts.shape[0] != 4:
+            return 1
         x, y, w, h = cv2.boundingRect(biggestContour)
         CardWidth, CardHeight = w, h
         smallest = float("inf")
@@ -91,10 +94,19 @@ def getPhoto(image):
         CardCenter = [cent_x, cent_y]
         cropped = img[x:x + w, y:y + h]
         img = flattener(img, pts, w, h)
+    if not os.path.exists("P_"+folder):
+        os.makedirs("P_"+folder)
+    dic[image] = pts.tolist()
+    print(name)
+    cv2.imwrite('P_'+image, img)
 
-    cv2.imwrite('pokemon.png', img)
-    cv2.imshow('thresh', img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+dic = {}
+for i in range(1, 11):
+    directory = os.fsencode("./PSA_{0}".format(i))
+    for file in os.listdir(directory):
+        filename = os.fsdecode(file)
+        if filename.endswith(".jpg"): 
+            getPhoto("PSA_{0}".format(i), filename)
 
-getPhoto("images/IMG_2370.png")
+with open('data.json', 'w') as f:
+    json.dump(dic, f)
