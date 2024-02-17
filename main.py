@@ -55,7 +55,7 @@ def getPhoto(image):
     img_width, img_height = np.shape(img)[:2]
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     background = img_gray[int(img_height / 100)][int(img_width / 2)]
-    thresh_lvl = background - 60
+    thresh_lvl = background + 80
     
     img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
     _, thresh = cv2.threshold(img_blur, thresh_lvl, 255, cv2.THRESH_BINARY)
@@ -95,4 +95,4 @@ def getPhoto(image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-getPhoto("IMG_2361.png")
+getPhoto("images/-7449265171143728292.png")
