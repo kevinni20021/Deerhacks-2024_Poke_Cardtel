@@ -96,13 +96,12 @@ def getPhoto(folder, name):
         img = flattener(img, pts, w, h)
     if not os.path.exists("P_"+folder):
         os.makedirs("P_"+folder)
-    dic[image] = pts.tolist()
     cv2.imwrite('P_'+image, img)
 
-dic = {}
-for i in range(1, 11):
-    directory = os.fsencode("./PSA_{0}".format(i))
-    for file in os.listdir(directory):
-        filename = os.fsdecode(file)
-        if filename.endswith(".jpg"): 
-            getPhoto("PSA_{0}".format(i), filename)
+def getCards():
+    for i in range(1, 11):
+        directory = os.fsencode("./PSA_{0}".format(i))
+        for file in os.listdir(directory):
+            filename = os.fsdecode(file)
+            if filename.endswith(".jpg"): 
+                getPhoto("PSA_{0}".format(i), filename)
