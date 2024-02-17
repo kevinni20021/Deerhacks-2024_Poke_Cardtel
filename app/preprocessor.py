@@ -58,7 +58,7 @@ def getPhoto(folder, name):
         return 1
     img_width, img_height = np.shape(img)[:2]
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    background = img_gray[int(img_height / 100)][min(int(img_width / 2), img_height - 1)]
+    background = img_gray[int(img_height / 100)][int(img_width / 2)]
     thresh_lvl = background + 80
     if thresh_lvl > 180 or thresh_lvl < 120:
         return 1
@@ -96,12 +96,3 @@ def getPhoto(folder, name):
         os.makedirs("P_"+folder)
     cv2.imwrite('P_'+image, img)
 
-def getCards():
-    for i in range(8, 11):
-        directory = os.fsencode("PSA_{0}".format(i))
-        for file in os.listdir(directory):
-            filename = os.fsdecode(file)
-            if filename.endswith(".jpg"): 
-                getPhoto("PSA_{0}".format(i), filename)
-
-getCards()
