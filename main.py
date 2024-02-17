@@ -38,8 +38,8 @@ def flattener(image, pts, w, h):
             temp_rect[2] = pts[2][0]
             temp_rect[3] = pts[1][0]
 
-    maxWidth = 192
-    maxHeight = 256
+    maxWidth = 150
+    maxHeight = 200
 
     temp_rect += np.array([[-20, -20], [20, -20], [20, 20], [-20, 20]], dtype="float32")
 
@@ -56,6 +56,9 @@ def getPhoto(image):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     background = img_gray[int(img_height / 100)][int(img_width / 2)]
     thresh_lvl = background + 80
+    print(thresh_lvl)
+    if (thresh_lvl > 200):
+        thresh_lvl = 200
     
     img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
     _, thresh = cv2.threshold(img_blur, thresh_lvl, 255, cv2.THRESH_BINARY)
@@ -76,7 +79,6 @@ def getPhoto(image):
         x, y, w, h = cv2.boundingRect(biggestContour)
         CardWidth, CardHeight = w, h
         smallest = float("inf")
-        print(pts)
         for pt in pts:
             total = pt[0, 0] + pt[0, 1]
             if total < smallest:
@@ -95,4 +97,4 @@ def getPhoto(image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-getPhoto("images/-7449265171143728292.png")
+getPhoto("images/s-l1600.jpg")
