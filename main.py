@@ -41,7 +41,7 @@ def flattener(image, pts, w, h):
     maxWidth = 150
     maxHeight = 200
 
-    temp_rect += np.array([[-20, -20], [20, -20], [20, 20], [-20, 20]], dtype="float32")
+    temp_rect += np.array([[-30, -30], [30, -30], [30, 30], [-30, 30]], dtype="float32")
 
     dst = np.array([[0, 0], [maxWidth - 1, 0], [maxWidth - 1, maxHeight - 1], [0, maxHeight - 1]], np.float32)
     M = cv2.getPerspectiveTransform(temp_rect, dst)
@@ -74,7 +74,7 @@ def getPhoto(image):
     if len(contourValues) != 0:
         peri = cv2.arcLength(biggestContour, True)
         # Increase the accuracy parameter for better corner approximation
-        approx = cv2.approxPolyDP(biggestContour, 0.03 * peri, True)
+        approx = cv2.approxPolyDP(biggestContour, 0.01 * peri, True)
         pts = np.float32(approx)
         x, y, w, h = cv2.boundingRect(biggestContour)
         CardWidth, CardHeight = w, h
@@ -97,4 +97,4 @@ def getPhoto(image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-getPhoto("images/s-l1600.jpg")
+getPhoto("images/IMG_2370.png")
