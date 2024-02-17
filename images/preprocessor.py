@@ -60,12 +60,10 @@ def getPhoto(folder, name):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     background = img_gray[int(img_height / 100)][min(int(img_width / 2), img_height - 1)]
     thresh_lvl = background + 80
-    if thresh_lvl > 170 or thresh_lvl < 130:
+    if thresh_lvl > 180 or thresh_lvl < 120:
         return 1
-    
     img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
     _, thresh = cv2.threshold(img_blur, thresh_lvl, 255, cv2.THRESH_BINARY)
-    
     contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     contourValues = [cv2.contourArea(i) for i in contours]
     contourValues.sort()
@@ -77,7 +75,7 @@ def getPhoto(folder, name):
         # Increase the accuracy parameter for better corner approximation
         approx = cv2.approxPolyDP(biggestContour, 0.01 * peri, True)
         pts = np.float32(approx)
-        if pts.shape[0] != 4:
+        if pts.shape[0] >= 8:
             return 1
         x, y, w, h = cv2.boundingRect(biggestContour)
         CardWidth, CardHeight = w, h
@@ -99,9 +97,11 @@ def getPhoto(folder, name):
     cv2.imwrite('P_'+image, img)
 
 def getCards():
-    for i in range(1, 11):
-        directory = os.fsencode("./PSA_{0}".format(i))
+    for i in range(8, 11):
+        directory = os.fsencode("PSA_{0}".format(i))
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
             if filename.endswith(".jpg"): 
                 getPhoto("PSA_{0}".format(i), filename)
+
+getCards()
