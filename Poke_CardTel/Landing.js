@@ -25,8 +25,6 @@ const Landing = ({ navigation }) => {
             alert('Please enter the card name.');
         } else {
             try {
-                
-                //const url = 'http://100.112.90.138:5000/';
                 const url = 'http://142.1.200.8:5000/';
                 const data = {"name": cardName, "Photo1": photo1.base64, "Photo2": photo2.base64};
                 console.log("called");
@@ -36,7 +34,7 @@ const Landing = ({ navigation }) => {
                 console.error('Error fetching menu:', error);
                 throw error; // Rethrow the error to handle it where the function is called
             }
-            navigation.navigate('Result', { response });
+            navigation.navigate('Result', { responseData: response.data })
         }
     };
     
@@ -281,5 +279,4 @@ const styles = StyleSheet.create({
     },
   })
 
-export {response};
 export default Landing;
