@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import os
-import json
+import pytesseract
 
 def flattener(image, pts, w, h):
     """Flattens an image of a card into a top-down 200x300 perspective."""
@@ -51,8 +51,8 @@ def flattener(image, pts, w, h):
 
     return warp
 
-def getPhoto(folder, name):
-    image = folder + '/' + name
+def getPhoto(name):
+    image = name
     img = cv2.imread(image)
     if img is None:
         return 1
@@ -75,7 +75,7 @@ def getPhoto(folder, name):
         # Increase the accuracy parameter for better corner approximation
         approx = cv2.approxPolyDP(biggestContour, 0.01 * peri, True)
         pts = np.float32(approx)
-        if pts.shape[0] >= 8:
+        if pts.shape[0] >= 10:
             return 1
         x, y, w, h = cv2.boundingRect(biggestContour)
         CardWidth, CardHeight = w, h
@@ -92,7 +92,4 @@ def getPhoto(folder, name):
         CardCenter = [cent_x, cent_y]
         cropped = img[x:x + w, y:y + h]
         img = flattener(img, pts, w, h)
-    if not os.path.exists("P_"+folder):
-        os.makedirs("P_"+folder)
-    cv2.imwrite('P_'+image, img)
-
+    cv2.imwrite('model/P_'+image, img)

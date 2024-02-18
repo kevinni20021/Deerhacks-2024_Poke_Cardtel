@@ -25,7 +25,7 @@ const Landing = ({ navigation }) => {
             alert('Please enter the card name.');
         } else {
             try {
-                const url = 'http://142.1.200.8:5000/';
+                const url = 'http://100.112.28.221:5000/';
                 const data = {"name": cardName, "Photo1": photo1.base64, "Photo2": photo2.base64};
                 axios.post(url, data)
                     .then(response => {
