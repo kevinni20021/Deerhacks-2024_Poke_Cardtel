@@ -60,14 +60,15 @@ def getPhoto(name):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     background = img_gray[int(img_height / 100)][int(img_width / 2)]
     thresh_lvl = background + 80
-    if thresh_lvl > 180 or thresh_lvl < 120:
-        return 1
+    # if thresh_lvl > 180 or thresh_lvl < 120:
+    #     return None
+
     img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
-    _, thresh = cv2.threshold(img_blur, thresh_lvl, 255, cv2.THRESH_BINARY)
+    _, thresh = cv2.threshold(img_blur, 120, 255, cv2.THRESH_BINARY)
     contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     contourValues = [cv2.contourArea(i) for i in contours]
     contourValues.sort()
-    
+    thresh1 = cv2.resize(thresh, (300, 400))
     biggestContour = max(contours, key=cv2.contourArea)
 
     if len(contourValues) != 0:
@@ -75,8 +76,9 @@ def getPhoto(name):
         # Increase the accuracy parameter for better corner approximation
         approx = cv2.approxPolyDP(biggestContour, 0.01 * peri, True)
         pts = np.float32(approx)
-        if pts.shape[0] >= 10:
-            return 1
+        # if pts.shape[0] >= 10:
+        #     print("error")
+        #     return None
         x, y, w, h = cv2.boundingRect(biggestContour)
         CardWidth, CardHeight = w, h
         smallest = float("inf")
@@ -92,4 +94,6 @@ def getPhoto(name):
         CardCenter = [cent_x, cent_y]
         cropped = img[x:x + w, y:y + h]
         img = flattener(img, pts, w, h)
-    cv2.imwrite('model/P_'+image, img)
+    return img
+
+# getPhoto("front.jpg")
