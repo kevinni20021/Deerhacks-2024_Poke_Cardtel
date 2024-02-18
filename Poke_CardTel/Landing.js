@@ -20,20 +20,18 @@ const Landing = ({ navigation }) => {
         navigation.navigate('Camera2');
     };
 
-    const sendRequest = () => {
+    const sendRequest = async () => {
         if (cardName === '') {
             alert('Please enter the card name.');
         } else {
             try {
-                const url = 'http://100.112.28.221:5000/';
+                
+                //const url = 'http://100.112.90.138:5000/';
+                const url = 'http://142.1.200.8:5000/';
                 const data = {"name": cardName, "Photo1": photo1.base64, "Photo2": photo2.base64};
-                axios.post(url, data)
-                    .then(response => {
-                    console.log(response.data);
-                })
-                    .catch(error => {
-                    console.error('Error:', error);
-                }); 
+                console.log("called");
+                response = await axios.post(url, data);
+                console.log("called1");
             } catch (error) {
                 console.error('Error fetching menu:', error);
                 throw error; // Rethrow the error to handle it where the function is called

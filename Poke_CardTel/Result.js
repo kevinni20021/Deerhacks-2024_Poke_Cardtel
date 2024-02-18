@@ -6,7 +6,6 @@ import {photo1, clearPhoto1} from './Camera1';
 import {photo2, clearPhoto2} from './Camera2';
 
 const Result = ({ navigation }) => {
-  console.log(response);
   const sendRequest = () => {
     navigation.navigate('Landing');
     clearPhoto1();
@@ -25,8 +24,8 @@ const Result = ({ navigation }) => {
                   <Image style={styles.itemPhoto} source={{ uri: photo2.uri }} />
                 </View>
                 <View style={styles.gradeContainer}>
-                  <Text style={styles.grade}> Grade: {response}</Text>
-                  <Text style={styles.grade}> Price: {response} </Text>
+                  <Text style={styles.grade}> Grade: {response.data.grade}</Text>
+                  <Text style={styles.grade}> Price: {response.data.price} </Text>
                 </View>
                 <View style={styles.confirmContainer}>
                     <View style={styles.itemButton}>
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     backgroundColor: 'transparent',
-    color: 'black',
+    color: 'blue',
   },
   confirmContainer: {
     width: '100%', 
