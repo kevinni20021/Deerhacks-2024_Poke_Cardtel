@@ -1,10 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ImageBackground } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera } from 'expo-camera';
 import { shareAsync } from 'expo-sharing';
 import { manipulateAsync } from 'expo-image-manipulator';
 import * as MediaLibrary from 'expo-media-library';
+
+import background from './background.png';
 
 var photo1 = undefined;
 const Camera1 = ({ navigation }) => {
@@ -48,33 +50,46 @@ const Camera1 = ({ navigation }) => {
     };
     
     return (
-      <SafeAreaView style={styles.container}>
-        <View>
-          <Image style={styles.preview} source={{ uri: photo1.uri }} />
-        </View>
-        
-        <View style={styles.buttons}>  
-          <Button  title="Share" onPress={sharePic} />
-          {hasMediaLibraryPermission ? <Button title="Confirm" onPress={() => navigation.navigate('Landing', { uri: photo1.uri })} /> : undefined}
-          <Button title="Try Again" onPress={() => setPhoto1(undefined)} />
-        </View>
-      </SafeAreaView>
+      <View style={styles.screen}>
+        <ImageBackground style={styles.container} source={background} resizeMode="cover" >
+            <View>
+              <Image style={styles.preview} source={{ uri: photo1.uri }} />
+            </View>
+            
+            <View style={styles.buttons}>  
+              <Button  title="Share" onPress={sharePic} />
+              {hasMediaLibraryPermission ? <Button title="Confirm" onPress={() => navigation.navigate('Landing', { photo1 })} /> : undefined}
+              <Button title="Try Again" onPress={() => setPhoto1(undefined)} />
+            </View>
+        </ImageBackground>
+      </View>
+
+
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Camera style={styles.camera} ref={cameraRef}>
-        <StatusBar style="auto" />
-      </Camera>
-      <View style={styles.buttonContainer}>
-        <Button title="Take Pic" onPress={takePic} />
-      </View>
+    <View style={styles.screen}>
+      <ImageBackground style={styles.container} source={background} resizeMode="cover" >
+        <Camera style={styles.camera} ref={cameraRef}>
+          <StatusBar style="auto" />
+        </Camera>
+        <Text style={styles.warning}>
+          Please scan the card with a DARK background!
+        </Text>
+        <View style={styles.buttonContainer}>
+          <Button title="Take Pic" onPress={takePic} />
+        </View>
+      </ImageBackground>
     </View>
+
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     flexDirection: 'colomn',
@@ -85,6 +100,11 @@ const styles = StyleSheet.create({
     width: '90%',
     flexWrap: 'wrap',
     aspectRatio: 3/4,
+  },
+  warning: {
+    color: 'white',
+    top: '17%',
+    fontSize: 16,
   },
   buttonContainer: {
     position: 'absolute',
@@ -102,5 +122,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   }
 });
+
 export {photo1};
+export function clearPhoto1() {
+  photo1 = undefined;
+}
 export default Camera1;
