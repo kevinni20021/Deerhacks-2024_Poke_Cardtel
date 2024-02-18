@@ -3,6 +3,7 @@ import requests
 import os
 import base64
 from preprocessor import getPhoto
+from namelookup import name_lookup
 
 app = Flask(__name__)
 
@@ -11,14 +12,16 @@ app = Flask(__name__)
 def handle():
     if request.method == "POST":
         image_64_decode = base64.b64decode(request.json['Photo1'])
-        image_result = open('p1.jpg', 'wb')  # create a writable image and write the decoding result
+        image_result = open('front.jpg', 'wb')  # create a writable image and write the decoding result
         image_result.write(image_64_decode)
         image_64_decode = base64.b64decode(request.json['Photo2'])
-        image_result = open('p2.jpg', 'wb')  # create a writable image and write the decoding result
+        image_result = open('back.jpg', 'wb')  # create a writable image and write the decoding result
         image_result.write(image_64_decode)
-        getPhoto("p1.jpg")
-        getPhoto("p2.jpg")
-        return "ok", 200
+        getPhoto('front.jpg')
+        getPhoto('back.jpg')
+        price = name_lookup(request.json['name'], 9)
+        response = {'grade' : 9, 'price':price}
+        return response, 200
 
 
 if __name__ == "__main__":
