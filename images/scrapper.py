@@ -68,7 +68,7 @@ def steal_data(url: str, target: str):
                 try:
                     column_6_value = int(link_element.text.strip())
 
-                # Check if the value of column 6 is greater than 30
+                    # Check if the value of column 6 is greater than 30
                     if column_6_value > 50:
                         # Find the corresponding link in column 5 using the row index
                         link_element_column_5 = driver.find_element(By.XPATH, f"//tr[{index}]/td[3]/a")
@@ -77,41 +77,33 @@ def steal_data(url: str, target: str):
                 except ValueError:
                     pass
             for final_url in table_urls:
-                print(final_url)
                 # FINAL URL IS URL TO TABLE
                 driver.get(final_url)
                 # MATCHES GRADES
                 WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.XPATH, '//*[@id="itemResults"]/tbody/tr/td[5]')))
-                d_searches = driver.find_elements(By.XPATH, '//*[@id="itemResults"]/tbody/tr/td[5]')
-                # CHECKS IF IMAGES = NUM GRADED
-                grade_check = []
-                c_check = []
-                for dsearch in d_searches:
+                    EC.presence_of_element_located((By.XPATH, '//*[@id="itemResults"]/tbody/tr'))
+                )
+                search_table = driver.find_elements(By.XPATH, f'//*[@id="itemResults"]/tbody/tr')
+                for index, row in enumerate(search_table, start=1):
                     try:
-                        grade_check.append(dsearch.text)
+                        row_grade = driver.find_element(By.XPATH,
+                                                        f'//*[@id="itemResults"]/tbody/tr[{index}]/td[5]').text
+                        row_image = driver.find_element(
+                            By.XPATH, f'//*[@id="itemResults"]/tbody/tr[{index}]/td/a').get_attribute("href")
+                        if row_image.startswith("https://"):
+                            grades.append(row_grade)
+                            images.append(row_image)
+                            if len(images) > saved_counter:
+                                saved_counter += 500
+                                cwd = os.getcwd()
+                                save_to_csv(images, grades, cwd + "/data" + str(saved_counter_url) + ".csv")
+                                saved_counter_url += 1
                     except NoSuchElementException:
-                        grade_check.append(0)
-                c_searches = driver.find_elements(By.XPATH, "//td/a")
-                for csearch in c_searches:
-                    try:
-                        if not csearch.get_attribute("href").startswith('https://www.psacard.com/auctionprices'):
-                            c_check.append(csearch.get_attribute("href"))
-                    except NoSuchElementException:
-                        c_check.append(0)
-                if len(c_check) == len(grade_check):
-                    grades += grade_check
-                    images += c_check
-                    if len(images) > saved_counter:
-                        saved_counter += 500
-                        cwd = os.getcwd()
-                        save_to_csv(images, grades, cwd + "/data" + str(saved_counter_url) + ".csv")
-                        saved_counter_url += 1
+                        pass
 
                 else:
                     print("some mismatch")
                 print(grades, images, len(images), len(images) == len(grades))
-
 
         except StaleElementReferenceException:
             images.append(0)
