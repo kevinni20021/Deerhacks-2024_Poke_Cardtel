@@ -10,7 +10,7 @@ Using the selenium python library, we scraped over 40000 images off the PSA webs
 The preprocssing step was done via the opencv library. We removed all background noise by using a filter and cropping out just the card itself using computer vision techniques. For images that cannot be preprocessed (ie too much noise or no card), we will remove them from the dataset at this point. 
 
 ### Machine learning
-Using the preprocessed dataset, we used tensorflow and the VGG16 architecture ot train our model. First we loaded the pretrained weights from imagenet for object recognition. Then using transfer learning techniques, we froze the base layer and trained the top model for our dataset. Then we unfroze the entire model and trained the entire network with our dataset. Ultimately, we achieved 90% accuracy with our test set.
+Using the preprocessed dataset, we built a convolutional neural network with VGG16 architecture using tensorflow. To train our model, we first loaded the pretrained weights from imagenet for object recognition. Then using transfer learning techniques, we froze the base layer and trained the top model for our dataset. Then we unfroze the entire model and trained the entire network with our dataset. Ultimately, we achieved 90% accuracy with our test set.
 
 ### Pricing
 Given the name and grade of the card, we will scrape a website using selenium and find out how much the card is worth.
